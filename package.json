@@ -1,0 +1,29 @@
+{
+  "name": "apiforge",
+  "version": "1.0.0",
+  "description": "Paste a Prisma schema, get a complete Express REST API as a downloadable project.",
+  "main": "src/server.js",
+  "private": true,
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js",
+    "db:push": "prisma db push",
+    "postinstall": "prisma generate",
+    "test:generator": "node scripts/smoke-test.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "@faker-js/faker": "^9.9.0",
+    "@prisma/client": "6.19.3",
+    "@prisma/internals": "6.19.3",
+    "archiver": "^7.0.1",
+    "bcryptjs": "^2.4.3",
+    "diff": "^7.0.0",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.2",
+    "jsonwebtoken": "^9.0.2",
+    "prisma": "6.19.3"
+  }
+}

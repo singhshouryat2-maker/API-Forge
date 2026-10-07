@@ -1,0 +1,58 @@
+// APIForge's own data: User -> Project -> Generation -> GeneratedFile (MySQL)
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           Int       @id @default(autoincrement())
+  email        String    @unique
+  name         String
+  passwordHash String
+  createdAt    DateTime  @default(now())
+  projects     Project[]
+}
+
+model Project {
+  id          Int          @id @default(autoincrement())
+  name        String
+  description String?      @db.Text
+  userId      Int
+  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  generations Generation[]
+
+  @@index([userId])
+}
+
+model Generation {
+  id         Int             @id @default(autoincrement())
+  version    Int
+  schema     String          @db.LongText
+  fileCount  Int
+  durationMs Int
+  summary    Json?
+  projectId  Int
+  project    Project         @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  createdAt  DateTime        @default(now())
+  files      GeneratedFile[]
+
+  @@unique([projectId, version])
+}
+
+model GeneratedFile {
+  id           Int        @id @default(autoincrement())
+  path         String     @db.VarChar(512)
+  content      String     @db.LongText
+  hash         String     @db.Char(64)
+  generationId Int
+  generation   Generation @relation(fields: [generationId], references: [id], onDelete: Cascade)
+
+  @@index([generationId])
+}

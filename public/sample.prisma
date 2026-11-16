@@ -1,0 +1,64 @@
+// A blog API: paste your own schema to replace this one.
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  name      String
+  password  String
+  role      Role     @default(USER)
+  bio       String?  @db.Text
+  posts     Post[]
+  profile   Profile?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Profile {
+  id      Int     @id @default(autoincrement())
+  website String?
+  avatar  String?
+  userId  Int     @unique
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Post {
+  id         Int       @id @default(autoincrement())
+  title      String
+  content    String?   @db.Text
+  published  Boolean   @default(false)
+  views      Int       @default(0)
+  authorId   Int
+  author     User      @relation(fields: [authorId], references: [id])
+  categoryId Int?
+  category   Category? @relation(fields: [categoryId], references: [id])
+  comments   Comment[]
+  createdAt  DateTime  @default(now())
+}
+
+model Category {
+  id    Int    @id @default(autoincrement())
+  name  String @unique
+  posts Post[]
+}
+
+model Comment {
+  id        String   @id @default(uuid())
+  body      String
+  postId    Int
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+}

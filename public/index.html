@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>APIForge</title>
+<link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<header>
+  <b>APIForge</b>
+  <span id="who"></span>
+</header>
+
+<section id="auth" hidden>
+  <h2>Log in or register</h2>
+  <input id="name" placeholder="Name (register only)">
+  <input id="email" placeholder="Email">
+  <input id="password" type="password" placeholder="Password (8+ chars)">
+  <div><button id="loginBtn">Log in</button> <button id="registerBtn">Register</button></div>
+  <p id="authMsg" class="err"></p>
+</section>
+
+<main id="app" hidden>
+  <aside>
+    <div class="row"><input id="projName" placeholder="New project name"><button id="newProj">+</button></div>
+    <ul id="projects"></ul>
+  </aside>
+  <div id="work">
+    <p class="muted" id="empty">Create or select a project.</p>
+    <div id="editor" hidden>
+      <h2 id="projTitle"></h2>
+      <textarea id="schema" spellcheck="false"></textarea>
+      <div class="row">
+        <button id="genBtn">Generate</button>
+        <button id="sampleBtn" class="ghost">Load sample</button>
+        <span id="status" class="muted"></span>
+      </div>
+      <div id="result" hidden>
+        <div class="row">
+          <button id="dlBtn">Download ZIP</button>
+          <button id="prevBtn">Live preview</button>
+          <select id="history"></select>
+        </div>
+        <pre id="changes"></pre>
+        <div id="preview" hidden>
+          <div class="row">
+            <select id="endpoint"></select>
+            <input id="idInput" placeholder="id" size="6">
+            <button id="sendBtn">Send</button>
+          </div>
+          <textarea id="reqBody" rows="5"></textarea>
+          <pre id="resp"></pre>
+        </div>
+        <div class="files"><ul id="fileList"></ul><pre id="fileView"></pre></div>
+      </div>
+    </div>
+  </div>
+</main>
+<script src="/app.js"></script>
+</body>
+</html>

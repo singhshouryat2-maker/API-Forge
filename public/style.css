@@ -1,0 +1,24 @@
+* { box-sizing: border-box; }
+body { margin: 0; font: 14px system-ui, sans-serif; background: #0f1115; color: #e6e6e6; }
+header { display: flex; justify-content: space-between; padding: 12px 20px; border-bottom: 1px solid #222; }
+input, textarea, select, button { font: inherit; color: inherit; background: #181b22; border: 1px solid #2a2e38; border-radius: 6px; padding: 7px 10px; }
+textarea { width: 100%; font-family: ui-monospace, monospace; font-size: 13px; }
+#schema { height: 280px; }
+button { background: #4f6df5; border: 0; cursor: pointer; }
+button.ghost { background: transparent; border: 1px solid #2a2e38; }
+button:disabled { opacity: .5; }
+#auth { max-width: 320px; margin: 60px auto; display: grid; gap: 10px; }
+main { display: grid; grid-template-columns: 240px 1fr; min-height: calc(100vh - 45px); }
+aside { border-right: 1px solid #222; padding: 12px; }
+aside ul, #fileList { list-style: none; padding: 0; margin: 8px 0; }
+aside li, #fileList li { padding: 5px 8px; border-radius: 4px; cursor: pointer; }
+aside li:hover, #fileList li:hover, li.on { background: #1d2230; }
+#work { padding: 16px 20px; overflow: auto; }
+.row { display: flex; gap: 8px; align-items: center; margin: 8px 0; }
+.row input { flex: 1; }
+pre { background: #14171d; padding: 10px; border-radius: 6px; overflow: auto; font-size: 12px; white-space: pre-wrap; }
+pre:empty { display: none; }
+.files { display: grid; grid-template-columns: 260px 1fr; gap: 10px; }
+#fileList { font-size: 12px; max-height: 500px; overflow: auto; }
+#fileView { max-height: 500px; margin: 8px 0; }
+.muted { color: #888; } .err { color: #f87171; white-space: pre-wrap; }

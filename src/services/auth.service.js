@@ -17,7 +17,6 @@ async function register({ name, email, password }) {
     errors.push({ field: 'password', message: 'Password must be at least 8 characters' });
   }
   if (errors.length) throw new HttpError(422, 'Validation failed', errors);
-
   const normalized = email.trim().toLowerCase();
   const existing = await prisma.user.findUnique({ where: { email: normalized } });
   if (existing) throw new HttpError(409, 'An account with this email already exists');

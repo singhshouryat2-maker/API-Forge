@@ -13,7 +13,7 @@ const IRREGULAR = {
   tooth: 'teeth',
 };
 const UNCOUNTABLE = new Set(['news', 'data', 'info', 'information', 'equipment', 'media', 'series', 'species', 'feedback', 'metadata']);
-
+// shubhrat on top
 const lowerFirst = (s) => s.charAt(0).toLowerCase() + s.slice(1);
 const upperFirst = (s) => s.charAt(0).toUpperCase() + s.slice(1);
 

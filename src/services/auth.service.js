@@ -26,7 +26,7 @@ async function register({ name, email, password }) {
   });
   return { user: publicUser(user), token: signToken(user) };
 }
-
+// making documentation 
 async function login({ email, password }) {
   if (!email || !password) throw new HttpError(400, 'Email and password are required');
   const user = await prisma.user.findUnique({ where: { email: String(email).trim().toLowerCase() } });

@@ -10,7 +10,7 @@
     "db:push": "prisma db push",
     "postinstall": "prisma generate",
     "test:generator": "node scripts/smoke-test.js",
-    "vercel-build": "prisma generate && prisma db push --skip-generate"
+    "vercel-build": "prisma generate && node scripts/db-push.js"
   },
   "engines": {
     "node": ">=18"

@@ -15,7 +15,11 @@ async function api(method, url, body) {
   if (res.status !== 204) {
     try { data = await res.json(); } catch { throw new Error('Server error (' + res.status + '). Please try again.'); }
   }
-  if (!res.ok) throw new Error(data.error?.message + (data.error?.details ? '\n' + data.error.details.map((d) => d.message || d).join('\n') : ''));
+  if (!res.ok) {
+    let msg = data.error?.message + (data.error?.details ? '\n' + data.error.details.map((d) => d.message || d).join('\n') : '');
+    if (res.status >= 500) msg += `\n\n[${method} ${url} → ${res.status}]\n${data.error?.debug || ''}`;
+    throw new Error(msg);
+  }
   return data;
 }
 

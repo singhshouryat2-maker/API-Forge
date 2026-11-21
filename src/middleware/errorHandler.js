@@ -30,6 +30,8 @@ function errorHandler(err, req, res, next) {
   }
 
   const body = { success: false, error: { message } };
+  // where the error came from (helps find bugs on Vercel)
+  if (status >= 500) body.error.debug = String((err && err.stack) || err).split('\n').slice(0, 6).join('\n');
   if (err.details) body.error.details = err.details;
   res.status(status).json(body);
 }

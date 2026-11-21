@@ -9,7 +9,8 @@
     "dev": "node --watch src/server.js",
     "db:push": "prisma db push",
     "postinstall": "prisma generate",
-    "test:generator": "node scripts/smoke-test.js"
+    "test:generator": "node scripts/smoke-test.js",
+    "vercel-build": "prisma generate && prisma db push --skip-generate"
   },
   "engines": {
     "node": ">=18"

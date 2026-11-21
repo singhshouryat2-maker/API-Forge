@@ -17,11 +17,18 @@ function errorHandler(err, req, res, next) {
   } else if (err.code === 'P2025') {
     status = 404;
     message = 'Not found';
+  } else if (err.code === 'P2021') {
+    status = 500;
+    message = 'Database tables missing. Run: npx prisma db push';
+  } else if (err.name === 'PrismaClientInitializationError') {
+    status = 500;
+    message = 'Cannot connect to database. Check DATABASE_URL';
   }
 
   if (status >= 500) {
     console.error(err);
-    if (config.env !== 'development') message = 'Internal server error';
+    // hide raw internal messages, keep the friendly ones set above
+    if (config.env !== 'development' && message === err.message) message = 'Internal server error';
   }
 
   const body = { success: false, error: { message } };

@@ -19,6 +19,9 @@ async function api(method, url, body) {
   return data;
 }
 
+// show any error from a button click instead of failing silently
+window.addEventListener('unhandledrejection', (e) => alert(e.reason?.message || e.reason));
+
 /* ---- auth ---- */
 async function auth(path) {
   $('authMsg').textContent = 'Please wait...';
@@ -56,7 +59,7 @@ async function loadProjects() {
   });
 }
 $('newProj').onclick = async () => {
-  if (!$('projName').value.trim()) return;
+  if (!$('projName').value.trim()) return alert('Type a project name first');
   const { data } = await api('POST', '/projects', { name: $('projName').value });
   $('projName').value = '';
   await loadProjects();

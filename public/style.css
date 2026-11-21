@@ -15,7 +15,7 @@ aside li, #fileList li { padding: 5px 8px; border-radius: 4px; cursor: pointer; 
 aside li:hover, #fileList li:hover, li.on { background: #1d2230; }
 #work { padding: 16px 20px; overflow: auto; }
 .row { display: flex; gap: 8px; align-items: center; margin: 8px 0; }
-.row input { flex: 1; }
+.row input { flex: 1; min-width: 0; }
 pre { background: #14171d; padding: 10px; border-radius: 6px; overflow: auto; font-size: 12px; white-space: pre-wrap; }
 pre:empty { display: none; }
 .files { display: grid; grid-template-columns: 260px 1fr; gap: 10px; }

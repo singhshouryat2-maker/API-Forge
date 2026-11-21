@@ -20,9 +20,10 @@ function errorHandler(err, req, res, next) {
   } else if (err.code === 'P2021') {
     status = 500;
     message = 'Database tables missing. Run: npx prisma db push';
-  } else if (err.name === 'PrismaClientInitializationError') {
-    status = 500;
-    message = 'Cannot connect to database. Check DATABASE_URL';
+  } else if (String(err.name).startsWith('Prisma')) {
+    // show the real database error (last line of Prisma's message)
+    const lines = String(err.message).trim().split('\n');
+    message = 'Database error: ' + lines[lines.length - 1];
   }
 
   if (status >= 500) {

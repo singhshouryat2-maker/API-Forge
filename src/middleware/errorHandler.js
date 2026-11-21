@@ -1,4 +1,3 @@
-const config = require('../config');
 
 // eslint-disable-next-line no-unused-vars
 function errorHandler(err, req, res, next) {
@@ -28,8 +27,6 @@ function errorHandler(err, req, res, next) {
 
   if (status >= 500) {
     console.error(err);
-    // hide raw internal messages, keep the friendly ones set above
-    if (config.env !== 'development' && message === err.message && !err.expose) message = 'Internal server error';
   }
 
   const body = { success: false, error: { message } };

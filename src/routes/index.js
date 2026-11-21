@@ -4,6 +4,9 @@ const { requireAuth } = require('../middleware/auth');
 
 const router = Router();
 
+// Shows which version is deployed
+router.get('/health', (req, res) => res.json({ ok: true, commit: (process.env.VERCEL_GIT_COMMIT_SHA || 'local').slice(0, 7) }));
+
 // Auth
 router.post('/auth/register', c.register);
 router.post('/auth/login', c.login);

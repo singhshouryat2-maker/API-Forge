@@ -115,7 +115,13 @@ async function startPreview(userId, generationId) {
   const gen = await getOwnedGeneration(userId, generationId, { withFiles: true });
   const meta = gen.summary && gen.summary.previewMeta;
   if (!meta) throw new HttpError(400, 'This generation has no preview data; regenerate it.');
-  const p = await preview.startPreview({ generationId: gen.id, userId, files: gen.files, meta });
+  let p;
+  try {
+    p = await preview.startPreview({ generationId: gen.id, userId, files: gen.files, meta });
+  } catch (err) {
+    err.expose = true; // show the real reason on screen
+    throw err;
+  }
   return {
     token: p.token,
     baseUrl: `/preview/${p.token}`,

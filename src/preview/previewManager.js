@@ -8,7 +8,7 @@
  */
 const fs = require('fs/promises');
 const path = require('path');
-const crypto = require('crypto');
+const jwt = require('jsonwebtoken');
 const config = require('../config');
 const { createMockPrisma } = require('./mockPrisma');
 
@@ -21,16 +21,22 @@ const MAX_PREVIEWS = 20;
 
 const PREVIEW_FILES = /^(src\/|prisma\/seed\.js$)/;
 
-async function startPreview({ generationId, userId, files, meta }) {
+// Preview tokens are signed so any server instance can rebuild a preview it doesn't have
+// (on Vercel, requests can land on different instances).
+const PREVIEW_SECRET = config.jwtSecret + ':preview';
+
+async function startPreview({ generationId, userId, files, meta, token }) {
   // One live preview per user keeps memory bounded
-  for (const p of previews.values()) if (p.userId === userId) await stopPreview(p.token);
+  for (const p of previews.values()) if (p.userId === userId && p.token !== token) await stopPreview(p.token);
   if (previews.size >= MAX_PREVIEWS) {
     const oldest = [...previews.values()].sort((a, b) => a.startedAt - b.startedAt)[0];
     await stopPreview(oldest.token);
   }
 
-  const token = crypto.randomBytes(12).toString('hex');
+  const ttlSeconds = config.previewTtlMinutes * 60;
+  token = token || jwt.sign({ g: generationId, u: userId }, PREVIEW_SECRET, { expiresIn: ttlSeconds });
   const dir = path.join(PREVIEW_ROOT, token);
+  await linkNodeModules();
 
   for (const file of files) {
     if (!PREVIEW_FILES.test(file.path)) continue;
@@ -84,6 +90,35 @@ async function startPreview({ generationId, userId, files, meta }) {
   return preview;
 }
 
+// The generated code does require('express') etc. Files live in storage (on Vercel: /tmp),
+// so link APIForge's node_modules next to them for require() to find.
+async function linkNodeModules() {
+  const link = path.join(PREVIEW_ROOT, 'node_modules');
+  await fs.mkdir(PREVIEW_ROOT, { recursive: true });
+  try {
+    await fs.symlink(path.join(__dirname, '..', '..', 'node_modules'), link, 'dir');
+  } catch (err) {
+    if (err.code !== 'EEXIST') throw err;
+  }
+}
+
+// Rebuilds a preview from its signed token when this instance doesn't have it
+const restoring = new Map();
+function restorePreview(token) {
+  if (!restoring.has(token)) {
+    const job = (async () => {
+      const { g, u } = jwt.verify(token, PREVIEW_SECRET);
+      const prisma = require('../lib/prisma');
+      const gen = await prisma.generation.findUnique({ where: { id: g }, include: { files: true } });
+      const meta = gen && gen.summary && gen.summary.previewMeta;
+      if (!meta) return null;
+      return startPreview({ generationId: g, userId: u, files: gen.files, meta, token });
+    })().catch(() => null).finally(() => restoring.delete(token));
+    restoring.set(token, job);
+  }
+  return restoring.get(token);
+}
+
 async function cleanup(token, dir) {
   for (const key of Object.keys(require.cache)) {
     if (key.startsWith(dir + path.sep)) delete require.cache[key];
@@ -112,8 +147,8 @@ function getPreview(token) {
 }
 
 /** Express middleware mounted at /preview/:token */
-function previewHandler(req, res, next) {
-  const p = getPreview(req.params.token);
+async function previewHandler(req, res, next) {
+  const p = getPreview(req.params.token) || (await restorePreview(req.params.token));
   if (!p) {
     return res.status(404).json({ success: false, error: { message: 'Preview not found or expired. Start a new one from APIForge.' } });
   }

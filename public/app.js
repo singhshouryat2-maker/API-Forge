@@ -11,19 +11,23 @@ async function api(method, url, body) {
     body: body ? JSON.stringify(body) : undefined,
   });
   if (res.status === 401 && token) return logout();
-  const data = res.status === 204 ? {} : await res.json();
+  let data = {};
+  if (res.status !== 204) {
+    try { data = await res.json(); } catch { throw new Error('Server error (' + res.status + '). Please try again.'); }
+  }
   if (!res.ok) throw new Error(data.error?.message + (data.error?.details ? '\n' + data.error.details.map((d) => d.message || d).join('\n') : ''));
   return data;
 }
 
 /* ---- auth ---- */
 async function auth(path) {
-  $('authMsg').textContent = '';
+  $('authMsg').textContent = 'Please wait...';
   try {
     const d = await api('POST', '/auth/' + path, { name: $('name').value, email: $('email').value, password: $('password').value });
     token = d.token;
     localStorage.setItem('token', token);
-    start();
+    $('authMsg').textContent = '';
+    await start();
   } catch (e) { $('authMsg').textContent = e.message; }
 }
 $('loginBtn').onclick = () => auth('login');

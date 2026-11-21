@@ -15,6 +15,7 @@ module.exports = {
   jwtSecret: process.env.JWT_SECRET,
   jwtExpiresIn: process.env.JWT_EXPIRES_IN || '7d',
   previewTtlMinutes: parseInt(process.env.PREVIEW_TTL_MINUTES, 10) || 15,
-  storageDir: path.join(__dirname, '..', 'storage'),
+  // Vercel only allows writing to /tmp
+  storageDir: process.env.VERCEL ? '/tmp/storage' : path.join(__dirname, '..', 'storage'),
   publicDir: path.join(__dirname, '..', 'public'),
 };

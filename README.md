@@ -234,3 +234,11 @@ blog-api/
 ## Author
 
 **Shourya Singh** — B.Tech CSE (AI), Rishihood University / Newton School of Technology
+
+## Deploying to Vercel
+
+1. Import the GitHub repo in Vercel.
+2. In Settings → Environment Variables add:
+   - `DATABASE_URL` – your MySQL / TiDB connection string (SSL is added automatically for TiDB)
+   - `JWT_SECRET` – any long random string
+3. Deploy. The build creates the database tables automatically (`npm run vercel-build`).

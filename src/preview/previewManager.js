@@ -12,6 +12,9 @@ const jwt = require('jsonwebtoken');
 const config = require('../config');
 const { createMockPrisma } = require('./mockPrisma');
 
+// The generated seed uses faker. This line makes Vercel bundle it with the app.
+require.resolve('@faker-js/faker');
+
 const PREVIEW_ROOT = path.join(config.storageDir, 'previews');
 const REGISTRY_KEY = '__APIFORGE_PREVIEWS__';
 global[REGISTRY_KEY] = global[REGISTRY_KEY] || {};

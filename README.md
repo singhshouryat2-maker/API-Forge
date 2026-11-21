@@ -2,6 +2,8 @@
 
 **Paste a Prisma schema, click Generate, and download a complete, working Express REST API.**
 
+**Live demo:** https://api-forge-b7eo.vercel.app
+
 Building a CRUD backend by hand takes hours. APIForge reads your Prisma schema and generates the whole project (routes, controllers, services, validation, seed data, Postman collection and README) in seconds, as a ZIP you can run with `npm install && npm start`.
 
 ---
